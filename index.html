@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,minimum-scale=1,maximum-scale=1,user-scalable=no" />
+  <title>糗事百科</title>
+  <link href="css/mui.min.css" rel="stylesheet"/>
+  <style type="text/css">
+  	li{
+  		height: 50px;
+  		margin-top: 10px;
+  		border: 1px solid #f00;
+  	}
+  	img{
+  		vertical-align: middle;
+  	}
+  	.mui-card-footer .mui-card-footer:before, 
+  	.mui-card-footer .mui-card-header:after{
+  		display: none;
+  	}
+  	.mui-scroll>.mui-pull-bottom-tips{
+  		font-size: 15px;
+  		line-height: 24px;
+  		font-weight: 700;
+	    text-align: center;
+	    color: #777;
+	    padding: 6px 0;
+	    vertical-align: middle;
+  	}
+		.mui-slider .mui-slider-group .mui-slider-item .mui-card-media img{
+			width: auto;
+		}
+		.latest-box .mui-card{
+			margin: 0;
+			border-radius: 0;
+		}
+		.latest-box .mui-card+.mui-card{
+			margin-top: 10px;
+		}
+  	/*.mui-ellipsis-4{
+	    display: -webkit-box;
+	    overflow: hidden;
+	
+	    white-space: normal !important;
+	    text-overflow: ellipsis;
+	    word-wrap: break-word;
+	
+	    -webkit-line-clamp: 4;
+	    -webkit-box-orient: vertical;
+	    padding-bottom: 0;
+	    margin-bottom: 15px;
+		}*/
+  </style>
+  <script src="js/mui.min.js"></script>
+  <script src="js/artTemplate.js" type="text/javascript"></script>
+</head>
+<body>
+<header class="mui-bar mui-bar-nav">
+  <h1 class="mui-title">糗事百科接口调用</h1>
+</header>
+<div class="mui-content">
+	<div id="slider" class="mui-slider mui-fullscreen">
+		<div id="sliderSegmentedControl" class="mui-scroll-wrapper mui-slider-indicator mui-segmented-control mui-segmented-control-inverted">
+			<div id="navList" class="mui-scroll">
+				<a id="latest" class="mui-control-item mui-active" href="#item1mobile">
+					最新
+				</a>
+				<a id="imgrank" class="mui-control-item" href="#item2mobile">
+					热图
+				</a>
+				<a id="text" class="mui-control-item" href="#item3mobile">
+					纯文字
+				</a>
+				<a id="hot" class="mui-control-item" href="#item4mobile">
+					24小时
+				</a>
+			</div>
+		</div>	
+		<div class="mui-slider-group">
+			<div id="item1mobile" class="mui-slider-item mui-control-content mui-active">
+				<div class="mui-scroll-wrapper">
+					<div id="latestList" class="mui-scroll" data-num="1">
+						<div id="latestB" class="latest-box"></div>
+					</div>
+				</div>
+			</div>
+			<div id="item2mobile" class="mui-slider-item mui-control-content">
+				<div class="mui-scroll-wrapper">
+					<div id="imgrankList" class="mui-scroll" data-num="1">
+						<div id="imgrankB"></div>
+					</div>
+				</div>
+			</div>
+			<div id="item3mobile" class="mui-slider-item mui-control-content">
+				<div class="mui-scroll-wrapper">
+					<div id="textList" class="mui-scroll" data-num="1">
+						<div id="textB"></div>
+					</div>
+				</div>
+			</div>
+			<div id="item4mobile" class="mui-slider-item mui-control-content">
+				<div class="mui-scroll-wrapper">
+					<div id="hotList" class="mui-scroll" data-num="1">
+						<div id="hotB"></div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<script id="imgrankT" type="text/template">
+	<% for(var i = 0; i < $data.length; i++){ %>
+	<% var user = $data[i].user %>
+	<% var data = $data[i] %>
+	<% if(user){ %>
+	<div class="mui-card">
+		<div class="mui-card-header mui-card-media" style="overflow: hidden;">
+			<img src="http:<%= user.medium %>">
+			<div class="mui-media-body">
+				<%= user.login %>
+				<p><%= user.astrology %></p>
+			</div>
+		</div>
+		<div class="mui-card-content">
+			<img src="http:<%= data.high_loc %>" alt="" width="100%">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= data.content %>
+			</div>
+		</div>
+		<% if(data.hot_comment){ %>
+		<div class="mui-card-footer">
+			<div class="mui-card-content-inner">
+				<h4 style="margin-left: -15px;">用户评论</h4>
+				<div class="mui-card-header mui-card-media" style="overflow: hidden;">
+					<img style="border-radius: 50%;" src="http:<%= data.hot_comment.user.medium %>">
+					<div class="mui-media-body" style="line-height: 34px;"><%= data.hot_comment.user.login %></div>
+				</div>
+				<p style="color: #000;background-color: #fff;"><%= data.hot_comment.content %></p>
+			</div>
+		</div>
+		<% } %>
+	</div>
+	<% } %>
+	<% } %>
+</script>
+<script id="latestT" type="text/template">
+	<% for(var i = 0; i < $data.length; i++){ %>
+	<div class="mui-card">
+		<!--内容区-->
+		<% if( $data[i].format === 'image'){%>
+		<div class="mui-card-content">
+			<img src="http:<%= $data[i].high_loc %>" alt="" width="100%">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% }else if( $data[i].format === 'video'){ %>
+		<div class="mui-card-content">
+			<div class="videoPlayer" style="text-align: center;background-color: #000;position: relative;" data-url="<%= $data[i].high_url %>">
+				<img src="<%= $data[i].pic_url %>" width="70%" height="auto" style="width:70%;height:auto;"/>
+				<span class="mui-icon mui-icon-videocam" style="color: #fff;font-size: 50px;font-weight: bold;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);-webkit-transform:translate(-50%,-50%);"></span>
+			</div>
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<h1>我是视屏</h1>
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% }else if( $data[i].format === 'word'){ %>
+		<div class="mui-card-content">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% } %>
+	</div>
+	<% } %>
+</script>
+<script id="textT" type="text/template">
+	<% for(var i = 0; i < $data.length; i++){ %>
+	<div class="mui-card">
+		<!--内容区-->
+		<% if( $data[i].format === 'image'){%>
+		<div class="mui-card-content">
+			<img src="<%= $data[i].high_loc %>" alt="" width="100%">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% }else if( $data[i].format === 'video'){ %>
+		<div class="mui-card-content">
+			<video width="100%" height="auto" controls="controls">
+				<source src="<%= $data[i].high_url %>" type="video/mp4"></source>
+			</video>
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<h1>我是视频</h1>
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% }else if( $data[i].format === 'word'){ %>
+		<div class="mui-card-content">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% } %>
+	</div>
+	<% } %>
+</script>
+<script id="hotT" type="text/template">
+	<% for(var i = 0; i < $data.length; i++){ %>
+	<div class="mui-card">
+		<!--内容区-->
+		<% if( $data[i].format === 'image'){%>
+		<div class="mui-card-content">
+			<img src="http:<%= $data[i].high_loc %>" alt="" width="100%">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% }else if( $data[i].format === 'video'){ %>
+		<div class="mui-card-content">
+			<div class="videoPlayer" style="text-align: center;background-color: #000;position: relative;" data-url="<%= $data[i].high_url %>">
+				<img src="<%= $data[i].pic_url %>" width="70%" height="auto" style="width:70%;height:auto;"/>
+				<span class="mui-icon mui-icon-videocam" style="color: #fff;font-size: 50px;font-weight: bold;position: absolute;top: 50%;left: 50%;transform: translate(-50%,-50%);-webkit-transform:translate(-50%,-50%);"></span>
+			</div>
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% }else if( $data[i].format === 'word'){ %>
+		<div class="mui-card-content">
+			<div class="mui-card-content-inner mui-ellipsis-4">
+				<%= $data[i].content %>
+			</div>
+		</div>
+		<% } %>
+	</div>
+	<% } %>
+</script>
+<script src="js/mui.pullToRefresh.js" type="text/javascript"></script>
+<script src="js/mui.pullToRefresh.material.js" type="text/javascript"></script>
+<script src="js/main.js" type="text/javascript"></script>
+<!--<script src="js/data.js" type="text/javascript"></script>-->
+<!--<script src="http://www.websh5.top/getJSONP.php?type=imgrank&page=1&count=1&callback=cb" type="text/javascript"></script>-->
+</body>
+</html>
